@@ -11,7 +11,7 @@ class DenoisingAutoencoder(object):
     #
     # TODO: implement sigmoid
     #
-        ret_val=(1/1+np.exp(x))
+        ret_val=1/(1+np.exp(-1*x))
         return ret_val
 
     def sigmoid_deriv(self, x):
@@ -104,9 +104,9 @@ class DenoisingAutoencoder(object):
     # shape (N, N).                                                             #
     #############################################################################
         encode=np.dot(X_noisy,W0)+b0
-        hidden_layer=1/1+np.exp(encode)
+        hidden_layer=1/(1+np.exp(-1*encode))
         decode=np.dot(hidden_layer,W1)+b1
-        scores=decode
+        scores=1/(1+np.exp(-1*decode))
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
@@ -117,7 +117,7 @@ class DenoisingAutoencoder(object):
     # Store the result in the variable loss, which should be a scalar.          #
     # (Don't forget to investigate the effect of L2 loss)                       #
     #############################################################################
-        data_loss=np.square(X_noisy-scores)
+        data_loss=np.sum(np.square(X-scores))
         reg_loss_encode = 0.5*reg*np.sum(W0*W0)
         reg_loss_decode =  0.5*reg*np.sum(W1*W1)
         reg_loss=reg_loss_encode+reg_loss_decode
